@@ -1,7 +1,9 @@
 package com.relly.video.controller;
 
 import com.relly.video.common.*;
+import com.relly.video.dto.LoginDTO;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,7 @@ public class LoginController {
     private RedisUtil redisUtil;
 
     @RequestMapping("getCode")
-    public JsonResult getCode(@NotBlank String phoneNumber){
+    public JsonResult getCode( String phoneNumber){
         //校验手机号
         checkPhone(phoneNumber);
         //生成一个6位0~9之间的随机字符串
@@ -31,11 +33,10 @@ public class LoginController {
             System.out.println(buffer.toString());
             if(!SMScode.sendCode(phoneNumber, buffer.toString())) {
                 throw new ServiceException("验证码发送失败！");
-            } else {
-                redisUtil.set(phoneNumber,buffer.toString());
-                redisUtil.expire(phoneNumber,20);
-                return new JsonResult(buffer.toString());
             }
+            redisUtil.set(phoneNumber,buffer.toString());
+            redisUtil.expire(phoneNumber,300);
+            return new JsonResult(buffer.toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("短信发送失败");
@@ -43,15 +44,15 @@ public class LoginController {
     }
 
     @PostMapping("login")
-    public JsonResult login(@NotBlank String phoneNumber, @NotBlank String code){
+    public JsonResult login(@RequestBody LoginDTO loginDTO){
         //校验手机号
-        checkPhone(phoneNumber);
-        if (redisUtil.getExpire(phoneNumber)==-2){
+        checkPhone(loginDTO.getPhoneNumber());
+        if (redisUtil.getExpire(loginDTO.getPhoneNumber())==-2){
             throw new ServiceException("验证码已过期！");
         }
         //从redis中拿出验证码
-        String cacheCode = (String) redisUtil.get(phoneNumber);
-        if(!cacheCode.equalsIgnoreCase(code)) {
+        String cacheCode = (String) redisUtil.get(loginDTO.getPhoneNumber());
+        if(!cacheCode.equalsIgnoreCase(loginDTO.getCode())) {
            throw new ServiceException("验证码错误！");
         }
        return new JsonResult();

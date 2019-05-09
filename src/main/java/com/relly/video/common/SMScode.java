@@ -13,8 +13,8 @@ public class SMScode {
         String str_code = URLEncoder.encode("#code#=" + code, "UTF-8");
         //包装好URL对象，将接口地址包装在此对象中
         URL url = new URL("http://v.juhe.cn/sms/send?mobile=" + phoneNumber +
-                "&tpl_id=101810&tpl_value=" + str_code + "&key=8cc630d8a9c4d0914fad9937dff91bf9");
-                        /* 短信模板id */                                        /* 短信应用接口的key */
+                "&tpl_id=155918&tpl_value=" + str_code + "&key=320ed283b086141ebfffbf01653c0b0e");
+                /* 短信模板id */                                        /* 短信应用接口的key */
         //打开连接，得到连接对象
         URLConnection connection = url.openConnection();
         //向服务器发送连接请求
