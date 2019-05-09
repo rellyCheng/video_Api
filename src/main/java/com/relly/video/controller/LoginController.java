@@ -1,44 +1,40 @@
 package com.relly.video.controller;
 
-import com.relly.video.common.JsonResult;
-import com.relly.video.common.SMScode;
-import com.relly.video.common.ServiceException;
+import com.relly.video.common.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import java.util.Random;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/home/")
+@RequestMapping("/api/home/")
 public class LoginController {
 
-    @RequestMapping("getCode")
-    public JsonResult getCode(@NotBlank String phoneNumber,HttpServletRequest request){
+    @Resource
+    private RedisUtil redisUtil;
 
+    @RequestMapping("getCode")
+    public JsonResult getCode(@NotBlank String phoneNumber){
         //校验手机号
         checkPhone(phoneNumber);
-
         //生成一个6位0~9之间的随机字符串
         StringBuffer buffer = new StringBuffer();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
             buffer.append(random.nextInt(10));
         }
-
         try {
+            System.out.println(buffer.toString());
             if(!SMScode.sendCode(phoneNumber, buffer.toString())) {
                 throw new ServiceException("验证码发送失败！");
             } else {
-                //将验证码、手机号码和当前的系统时间存储到session中
-                request.getSession().setAttribute("code", buffer.toString());
-                request.getSession().setAttribute("number", phoneNumber );
-                request.getSession().setAttribute("time", System.currentTimeMillis());
-                return new JsonResult("短信发送成功");
+                redisUtil.set(phoneNumber,buffer.toString());
+                redisUtil.expire(phoneNumber,20);
+                return new JsonResult(buffer.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,35 +43,17 @@ public class LoginController {
     }
 
     @PostMapping("login")
-    public JsonResult login(@NotBlank String phone, @NotBlank String code,HttpServletRequest request){
-
+    public JsonResult login(@NotBlank String phoneNumber, @NotBlank String code){
         //校验手机号
-        checkPhone(phone);
-
-        //从session中拿出数据
-        HttpSession session = request.getSession();
-        String code_session = (String)session.getAttribute("code");
-        String number = (String)session.getAttribute("number");
-        Long time = (Long)session.getAttribute("time");
-        //清除session中的数据
-        session.removeAttribute("code");
-        session.removeAttribute("number");
-        session.removeAttribute("time");
-
-
-        //验证码登录时效10分钟
-        if((System.currentTimeMillis() - time) / 1000 / 60 >= 0) {
-           throw new ServiceException("验证码已过期！");
+        checkPhone(phoneNumber);
+        if (redisUtil.getExpire(phoneNumber)==-2){
+            throw new ServiceException("验证码已过期！");
         }
-        //发送验证码的手机号码和登录时得到手机号码必须一致
-        if(!number.trim().equalsIgnoreCase(phone)) {
-            throw new ServiceException("手机号码不一致！");
+        //从redis中拿出验证码
+        String cacheCode = (String) redisUtil.get(phoneNumber);
+        if(!cacheCode.equalsIgnoreCase(code)) {
+           throw new ServiceException("验证码错误！");
         }
-
-        if(!code_session.trim().equalsIgnoreCase(code)) {
-           throw new ServiceException("验证码不一致！");
-        }
-
        return new JsonResult();
     }
 
