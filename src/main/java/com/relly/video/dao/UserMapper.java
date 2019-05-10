@@ -50,4 +50,6 @@ public interface UserMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(UserEntity record);
+
+    UserEntity selectByUserName(String phoneNumber);
 }
