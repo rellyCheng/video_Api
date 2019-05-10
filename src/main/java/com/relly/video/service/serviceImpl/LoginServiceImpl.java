@@ -16,7 +16,7 @@ public class LoginServiceImpl implements LoginService {
     private UserMapper userMapper;
 
     @Override
-    public void addUser(LoginDTO loginDTO) {
+    public UserEntity addUser(LoginDTO loginDTO) {
         UserEntity userEntity = userMapper.selectByUserName(loginDTO.getPhoneNumber());
         if (userEntity==null){
             Date date = new Date();
@@ -28,6 +28,10 @@ public class LoginServiceImpl implements LoginService {
                     .isDelete(0)
                     .build();
             userMapper.insert(userEntity);
+            //获取自增主键返回的Id
+            Integer id = userEntity.getId();
+            userEntity.setId(id);
         }
+        return userEntity;
     }
 }

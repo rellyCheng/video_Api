@@ -2,6 +2,7 @@ package com.relly.video.controller;
 
 import com.relly.video.common.*;
 import com.relly.video.dto.LoginDTO;
+import com.relly.video.entity.UserEntity;
 import com.relly.video.service.LoginService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,8 +39,7 @@ public class LoginController {
 //            if(!SMScode.sendCode(phoneNumber, buffer.toString())) {
 //                throw new ServiceException("验证码发送失败！");
 //            }
-            redisUtil.set(phoneNumber,buffer.toString());
-            redisUtil.expire(phoneNumber,300);
+            redisUtil.set(phoneNumber,buffer.toString(),300);
             return new JsonResult(buffer.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,11 +57,11 @@ public class LoginController {
         String cacheCode = (String) redisUtil.get(loginDTO.getPhoneNumber());
         if(!cacheCode.equalsIgnoreCase(loginDTO.getCode())) {
            throw new ServiceException("验证码错误！");
-        }        //从redis中拿出验证码
+        }
 
-        loginService.addUser(loginDTO);
+        UserEntity userEntity = loginService.addUser(loginDTO);
 
-        return new JsonResult();
+        return new JsonResult(userEntity);
     }
 
     /**

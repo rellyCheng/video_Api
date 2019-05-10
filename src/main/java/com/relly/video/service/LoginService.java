@@ -1,7 +1,8 @@
 package com.relly.video.service;
 
 import com.relly.video.dto.LoginDTO;
+import com.relly.video.entity.UserEntity;
 
 public interface LoginService {
-    void addUser(LoginDTO loginDTO);
+    UserEntity addUser(LoginDTO loginDTO);
 }
