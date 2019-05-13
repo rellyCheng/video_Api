@@ -22,7 +22,6 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public void handleViolationException(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String requestURI = request.getRequestURI();
-        log.error("uri : {} ,handle exception : ", requestURI, e);
             responseWithJson(response, new JsonResult(1, e.getMessage()));
 
     }
