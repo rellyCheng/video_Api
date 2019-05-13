@@ -59,14 +59,43 @@ public class PageObject {
         this.totalPage = (rowCount + pageSize - 1) / pageSize;
     }
 
-    /**
-     * 判断是否可能查不到数据
-     * 便于进一步处理
-     *
-     * @return 判断结果 分页查询结果是否为空集合
-     */
-    public boolean willCauseEmptyList() {
-        return totalPage < pageCurrent;
+    public Integer getPageCurrent() {
+        return pageCurrent;
     }
 
+    public void setPageCurrent(Integer pageCurrent) {
+        this.pageCurrent = pageCurrent;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Integer getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(Integer startIndex) {
+        this.startIndex = startIndex;
+    }
+
+    public Integer getRowCount() {
+        return rowCount;
+    }
+
+    public void setRowCount(Integer rowCount) {
+        this.rowCount = rowCount;
+    }
+
+    public Integer getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(Integer totalPage) {
+        this.totalPage = totalPage;
+    }
 }

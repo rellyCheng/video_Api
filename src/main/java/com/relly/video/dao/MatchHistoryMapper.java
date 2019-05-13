@@ -1,7 +1,6 @@
 package com.relly.video.dao;
 
 import com.relly.video.common.PageObject;
-import com.relly.video.common.PageResult;
 import com.relly.video.entity.MatchHistoryEntity;
 import org.apache.ibatis.annotations.Param;
 

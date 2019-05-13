@@ -57,24 +57,6 @@ public class JsonResult implements Serializable {
     }
 
     /**
-     * 出现异常以后要调用此方法封装异常信息
-     */
-    public JsonResult(Throwable t) {
-        this.state = ERROR;
-        this.message = t.getMessage();
-    }
-
-    /**
-     * 出现异常以后要调用此方法封装异常信息
-     * 返回异常信息的描述
-     */
-    public JsonResult(Throwable t, String data) {
-        this.state = ERROR;
-        this.message = t.getMessage();
-        this.data = data;
-    }
-
-    /**
      * 业务数据的构造方法
      * 指定状态码
      *
@@ -85,8 +67,5 @@ public class JsonResult implements Serializable {
         this.state = state;
         this.message = message;
     }
-
-
-
 
 }
