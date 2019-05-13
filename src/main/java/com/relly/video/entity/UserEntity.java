@@ -1,5 +1,7 @@
 package com.relly.video.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -25,6 +27,7 @@ public class UserEntity implements Serializable {
      *
      * @mbg.generated
      */
+    @JsonFormat( pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /**
@@ -43,6 +46,7 @@ public class UserEntity implements Serializable {
      *
      * @mbg.generated
      */
+    @JsonFormat( pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**

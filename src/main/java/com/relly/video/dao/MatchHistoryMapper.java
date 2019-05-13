@@ -1,6 +1,11 @@
 package com.relly.video.dao;
 
+import com.relly.video.common.PageObject;
+import com.relly.video.common.PageResult;
 import com.relly.video.entity.MatchHistoryEntity;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface MatchHistoryMapper {
     /**
@@ -50,4 +55,8 @@ public interface MatchHistoryMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(MatchHistoryEntity record);
+
+    int getListCount(Integer userId);
+
+    List<MatchHistoryEntity> getMatchHistoryList(@Param("pageObject")PageObject pageObject,@Param("userId")Integer userId);
 }

@@ -57,16 +57,13 @@ public class MessageEventHandler {
     }
 
     /**
-     * 向客户端推消息了
-     * 提醒的内容
-     * 对应的链接
-     * @param noticeContentMap, url
-     * @return void
+     * 向客户端推消息
      */
-    public static void sendnNewMactchEvent(Map<String,Object> noticeContentMap, List<String> userIdList) {
+    public static void sendnNewMatchEvent(List<Integer> userIdList) {
+        String roomId = String.valueOf(userIdList.get(0)+userIdList.get(1))+new Date();
         ArrayList<UUID> listClient = new ArrayList<>();
         if (!userIdList.isEmpty()){
-            for (String userId:userIdList) {
+            for (Integer userId:userIdList) {
                 if(mapClient.get(userId)!=null){
                     listClient.add(mapClient.get(userId));
                 }
@@ -75,14 +72,8 @@ public class MessageEventHandler {
             for (UUID clientId : listClient) {
                 if (server.getClient(clientId) == null)
                     continue;
-                server.getClient(clientId).sendEvent("newMactch", noticeContentMap, 1);
+                server.getClient(clientId).sendEvent("socket_info", roomId, 1);
             }
-        }
-    }
-
-    public static void sendnNewMatchEvent(Object obj) {
-        for (UUID cId : listClient) {
-            server.getClient(cId).sendEvent("socket_info", obj, 1);
         }
     }
 
