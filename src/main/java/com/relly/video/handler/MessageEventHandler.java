@@ -60,11 +60,13 @@ public class MessageEventHandler {
      * 向客户端推消息
      */
     public static void sendnNewMatchEvent(List<Integer> userIdList) {
+        //房间Id
         String roomId = String.valueOf(userIdList.get(0)+userIdList.get(1))+new Date();
         ArrayList<UUID> listClient = new ArrayList<>();
         if (!userIdList.isEmpty()){
             for (Integer userId:userIdList) {
                 if(mapClient.get(userId)!=null){
+                    //获取用户的客户端Id
                     listClient.add(mapClient.get(userId));
                 }
             }
@@ -72,6 +74,7 @@ public class MessageEventHandler {
             for (UUID clientId : listClient) {
                 if (server.getClient(clientId) == null)
                     continue;
+                //推送通知，和视频聊天房间Id
                 server.getClient(clientId).sendEvent("socket_info", roomId, 1);
             }
         }
