@@ -42,7 +42,7 @@ public class MatchServiceImpl implements MatchService {
         System.out.println(redisUtil.lGet("matchUserIdList",0,lSize));
 
         //当匹配池中人数大于5时 随机抽取两位用户就行配对
-        if (matchUserIdList.size()>5){
+        if (matchUserIdList.size()>1){
             Integer user1 =  (Integer)matchUserIdList.get(0);
             Integer user2 =  (Integer)matchUserIdList.get(1);
             System.out.println(user1+""+user2);

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/match")
@@ -30,4 +31,12 @@ public class MatchController {
         List<MatchHistoryEntity> list = matchService.getMatchHistoryList(size,current,userId);
         return new JsonResult(list);
     }
+
+    @RequestMapping("/senNewsMsg")
+    public JsonResult senNewsMsg(@RequestParam String clientId,@RequestParam String msg){
+        MessageEventHandler.sendnNewMsg(UUID.fromString(clientId),msg);
+        return new JsonResult();
+    }
+
+
 }

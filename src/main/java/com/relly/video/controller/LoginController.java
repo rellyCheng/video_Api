@@ -41,9 +41,9 @@ public class LoginController {
         }
         try {
             System.out.println(buffer.toString());
-            if(!SMScode.sendCode(phoneNumber, buffer.toString())) {
-                throw new ServiceException("验证码发送失败！");
-            }
+//            if(!SMScode.sendCode(phoneNumber, buffer.toString())) {
+//                throw new ServiceException("验证码发送失败！");
+//            }
             //手机号当作key，随机数当作value 保存到redis中，设置有效时间5分钟
             redisUtil.set(phoneNumber,buffer.toString(),300);
             return new JsonResult(buffer.toString());

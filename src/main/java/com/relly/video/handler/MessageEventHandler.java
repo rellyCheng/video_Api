@@ -16,7 +16,7 @@ import java.util.*;
 public class MessageEventHandler {
     private static SocketIOServer server;
     static ArrayList<UUID> listClient = new ArrayList<>();
-    static Map<String,UUID> mapClient = new HashMap<>();
+    static Map<Integer,UUID> mapClient = new HashMap<>();
 
     @Autowired
     public MessageEventHandler(SocketIOServer server){
@@ -30,7 +30,7 @@ public class MessageEventHandler {
     public void onConnect(SocketIOClient client){
         UUID clientId = client.getSessionId();
         listClient.add(clientId);
-        String userId = client.getHandshakeData().getSingleUrlParam("userId");
+        Integer userId = Integer.valueOf(client.getHandshakeData().getSingleUrlParam("userId"));
         mapClient.put(userId,clientId);
         System.out.println("客户端:" + clientId + "连接成功");
     }
@@ -61,23 +61,30 @@ public class MessageEventHandler {
      */
     public static void sendnNewMatchEvent(List<Integer> userIdList) {
         //房间Id
-        String roomId = String.valueOf(userIdList.get(0)+userIdList.get(1))+new Date();
+        String roomId = String.valueOf(userIdList.get(0)+userIdList.get(1));
         ArrayList<UUID> listClient = new ArrayList<>();
         if (!userIdList.isEmpty()){
             for (Integer userId:userIdList) {
-                if(mapClient.get(userId)!=null){
+//                if(mapClient.get(userId)!=null){
                     //获取用户的客户端Id
                     listClient.add(mapClient.get(userId));
-                }
+//                }
             }
             System.out.println("向客户端"+listClient+"推送消息");
             for (UUID clientId : listClient) {
                 if (server.getClient(clientId) == null)
                     continue;
                 //推送通知，和视频聊天房间Id
-                server.getClient(clientId).sendEvent("socket_info", roomId, 1);
+                server.getClient(clientId).sendEvent("news", roomId, 1);
             }
         }
+    }
+
+    /**
+     * 向客户端推消息
+     */
+    public static void sendnNewMsg(UUID clientId,String msg) {
+        server.getClient(clientId).sendEvent("news", msg, 1);
     }
 
 }
