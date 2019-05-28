@@ -32,7 +32,7 @@ public class MessageEventHandler {
         listClient.add(clientId);
         Integer userId = Integer.valueOf(client.getHandshakeData().getSingleUrlParam("userId"));
         mapClient.put(userId,clientId);
-        System.out.println("客户端:" + clientId + "连接成功");
+        System.out.println("用户"+userId+"。客户端:" + clientId + "连接成功");
     }
 
     /**
@@ -61,17 +61,11 @@ public class MessageEventHandler {
      */
     public static void sendnNewMatchEvent(List<Integer> userIdList) {
         //房间Id
-        String roomId = String.valueOf(userIdList.get(0)+userIdList.get(1));
-        ArrayList<UUID> listClient = new ArrayList<>();
+        String roomId = String.valueOf(userIdList.get(0)+userIdList.get(1)+new Date().getTime());
+        UUID clientId;
         if (!userIdList.isEmpty()){
             for (Integer userId:userIdList) {
-//                if(mapClient.get(userId)!=null){
-                    //获取用户的客户端Id
-                    listClient.add(mapClient.get(userId));
-//                }
-            }
-            System.out.println("向客户端"+listClient+"推送消息");
-            for (UUID clientId : listClient) {
+                clientId = mapClient.get(userId);
                 if (server.getClient(clientId) == null)
                     continue;
                 //推送通知，和视频聊天房间Id

@@ -37,6 +37,4 @@ public class MatchController {
         MessageEventHandler.sendnNewMsg(UUID.fromString(clientId),msg);
         return new JsonResult();
     }
-
-
 }
